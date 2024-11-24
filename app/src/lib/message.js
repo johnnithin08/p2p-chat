@@ -1,8 +1,8 @@
-export function createMessage (msg, local = false) {
+export function createMessage(msg, local = false) {
   return {
-    timestamp: new Date(),
+    timestamp: new Date().toISOString(),
     message: msg,
     local,
-    type: 'text',
-  }
+    type: "text",
+  };
 }
