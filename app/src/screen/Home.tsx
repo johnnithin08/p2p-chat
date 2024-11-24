@@ -39,11 +39,10 @@ export const HomeScreen = () => {
   };
 
   const handleJoinRoom = useCallback(() => {
-    handleTopic(roomTopicIn);
+    handleTopic(roomName);
     backend.joinRoom(roomName, handleTopic);
     closeBottomSheet();
-    setRoomName("");
-  }, [backend, roomTopicIn]);
+  }, [backend, roomName]);
 
   const handleTopic = useCallback((topic) => {
     dispatch(addRoomTopic(topic));

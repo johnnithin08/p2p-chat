@@ -16,6 +16,7 @@
     "@reduxjs/toolkit": "^2.3.0",
     "@shopify/flash-list": "1.7.1",
     "b4a": "1.6.7",
+    "dayjs": "^1.11.13",
     "events": "^3.3.0",
     "expo": "~52.0.10",
     "expo-build-properties": "^0.13.1",
