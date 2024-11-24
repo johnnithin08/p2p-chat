@@ -2,6 +2,11 @@
 
 ```sh
 npm install
+
+You need to remove the visionos code lines inside "node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec" and "node_modules/react-native=safe-area-context/react-native=safe-area-context.podspec" to build without errors.
+
+Related stackoverflow
+[https://stackoverflow.com/questions/78874314/visionos-method-in-hermes-engines-fails-the-pod-install]
 ```
 
 ## Run
@@ -17,12 +22,10 @@ cd terminal
 pear run --dev . [topic]
 ```
 
-
 ```sh
 > pear run --dev .
 [info] Created new chat room: a1b2c35fbeb452bc900c5a1c00306e52319a3159317312f54fe5a246d634f51a
 ```
-
 
 ## structure
 
@@ -44,4 +47,5 @@ For common usage:
 2. To run bare code with the React native UI, we'll bundle codes under `worklet/` by call `./script/bundle_worklet.sh` from root. (which is automatically run with `yarn android` command)
 
 Reference
+
 - [bare-pack](https://www.npmjs.com/package/bare-pack) - Bundle packing for Bare
