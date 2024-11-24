@@ -43,6 +43,7 @@ export const HomeScreen = () => {
     const messageListener = uiEvent.on(
       RECEIVE_MESSAGE_UI,
       ({ memberId, message }) => {
+        console.log("check in index", message);
         dispatch(addMessage({ ...message, memberId }));
       }
     );
@@ -50,8 +51,8 @@ export const HomeScreen = () => {
       dispatch(setPeersCount(count));
     });
     return () => {
-      messageListener.off();
-      peerCountListener.off();
+      messageListener.off(RECEIVE_MESSAGE_UI);
+      peerCountListener.off(CONNECTIONS_UI);
     };
   }, []);
 
@@ -84,6 +85,8 @@ export const HomeScreen = () => {
       setInputText("");
     }
   };
+
+  console;
 
   return (
     <KeyboardAvoidingView
