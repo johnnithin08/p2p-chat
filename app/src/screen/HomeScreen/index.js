@@ -12,6 +12,7 @@ import {
   Platform,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { FlashList } from "@shopify/flash-list";
 
 import { useBackend } from "../../component/BareProvider";
 import {
@@ -94,25 +95,32 @@ export const HomeScreen = () => {
         <>
           <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <View style={styles.innerContainer}>
-              <View style={styles.messageList}>
+              <View style={{ ...styles.messageList, flex: 1 }}>
                 <Text selectable>Topic: {roomTopic}</Text>
                 <Text>Peers: {peersCount}</Text>
-                {messages &&
-                  messages.map((event, idx) => (
-                    <View
-                      key={idx}
-                      style={
-                        event.local
-                          ? [styles.message, styles.myMessage]
-                          : styles.message
-                      }
-                    >
-                      <Text style={styles.member}>
-                        {event?.memberId ?? "You"}
-                      </Text>
-                      <Text selectable>{event.message}</Text>
-                    </View>
-                  ))}
+                <View style={{ flex: 1 }}>
+                  <FlashList
+                    data={messages}
+                    showsVerticalScrollIndicator
+                    renderItem={({ item, index }) => {
+                      return (
+                        <View
+                          key={index}
+                          style={
+                            item.local
+                              ? [styles.message, styles.myMessage]
+                              : styles.message
+                          }
+                        >
+                          <Text style={styles.member}>
+                            {item?.memberId ?? "You"}
+                          </Text>
+                          <Text selectable>{item.message}</Text>
+                        </View>
+                      );
+                    }}
+                  />
+                </View>
               </View>
             </View>
           </TouchableWithoutFeedback>
@@ -182,6 +190,7 @@ const styles = StyleSheet.create({
     marginVertical: 5,
     backgroundColor: "#e6e6e6",
     borderRadius: 10,
+    height: 20,
     alignSelf: "flex-start",
   },
   myMessage: {
