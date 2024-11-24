@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import {
   StyleSheet,
@@ -12,8 +12,13 @@ import {
   Platform,
   Modal,
   Pressable,
+  FlatList,
 } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
 
 import { useBackend } from "../component/BareProvider";
 import { useAppDispatch, useAppSelector } from "../hook/redux";
@@ -27,6 +32,7 @@ import { router } from "expo-router";
 export const Room = () => {
   const [inputText, setInputText] = useState("");
   const [modalVisible, setModalVisible] = useState(false);
+  const flashListRef = useRef<FlatList>(null);
 
   const backend = useBackend();
   const messages = useAppSelector((state) => state.messages);
@@ -40,6 +46,9 @@ export const Room = () => {
       RECEIVE_MESSAGE_UI,
       ({ memberId, message }) => {
         dispatch(addMessage({ ...message, memberId: memberId }));
+        if (flashListRef && flashListRef.current) {
+          flashListRef.current.scrollToEnd({ animated: true });
+        }
       }
     );
     const peerCountListener = uiEvent.on(CONNECTIONS_UI, (count) => {
@@ -80,32 +89,31 @@ export const Room = () => {
           <MaterialIcons name="info" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.innerContainer}>
-          <View style={styles.messageList}>
-            <FlashList
-              data={messages}
-              showsVerticalScrollIndicator
-              renderItem={({ item, index }) => {
-                return (
-                  <View
-                    key={index}
-                    style={
-                      item.local
-                        ? [styles.message, styles.myMessage]
-                        : styles.message
-                    }
-                  >
-                    <Text>{item?.memberId ?? "You"}</Text>
-                    <Text selectable>{item.message}</Text>
-                  </View>
-                );
-              }}
-              estimatedItemSize={30}
-            />
-          </View>
+      <View style={styles.innerContainer}>
+        <View style={styles.messageList}>
+          <FlashList
+            data={messages}
+            showsVerticalScrollIndicator={false}
+            renderItem={({ item, index }) => {
+              return (
+                <View
+                  key={index}
+                  style={
+                    item.memberId
+                      ? styles.message
+                      : [styles.message, styles.myMessage]
+                  }
+                >
+                  <Text selectable>{item.message}</Text>
+                  <Text>{dayjs(item.timestamp).fromNow()}</Text>
+                </View>
+              );
+            }}
+            ref={flashListRef}
+            estimatedItemSize={30}
+          />
         </View>
-      </TouchableWithoutFeedback>
+      </View>
 
       <Modal
         visible={modalVisible}
